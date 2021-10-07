@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../../Downloads/user-app/src/Users"
+		},
+		{
+			"path": "../../../../Downloads/user-app/src/ducks"
+		}
+	],
+	"settings": {}
+}
