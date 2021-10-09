@@ -1,13 +1,12 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { useParams, useHistory } from "react-router"
+import { useParams } from "react-router"
 import ProductForm from "./ProductForm"
 
 export default function ProductDetail({editProduct, deleteProduct}) { 
 const { id } = useParams()
 const [ toEditMode, setEditMode ] = useState(false)
 const [ product, setProduct ] = useState()
-const history = useHistory()
 
 useEffect(() => {
     async function fetchProduct() {
