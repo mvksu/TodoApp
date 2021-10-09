@@ -7,34 +7,36 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import ProductDetail from "./components/ProductDetail";
+import { ConfirmProvider } from "material-ui-confirm";
+
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
+    <ConfirmProvider>
+      <Router>
+        <div className="App">
+          <nav>
+            <ul>
+              <li>
+                <Link to="/">Home</Link>
+              </li>
+              <li>
+                <Link to="/products/new">Add new product</Link>
+              </li>
+            </ul>
+          </nav>
 
-          </ul>
-        </nav>
-
-        <Switch>
-          <Route exact path="/products/:id/details">
-            <ProductDetail />
-          </Route>
-          <Route exact path="/products">
-            <ProductList />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/products" />
-          </Route>
-        </Switch>
-      </div>
-    </Router>
+          <Switch>
+            <Route path="/products">
+              <ProductList />
+            </Route>
+            <Route exact path="/">
+              <Redirect to="/products" />
+            </Route>
+          </Switch>
+        </div>
+      </Router>
+    </ConfirmProvider>
   );
 }
 

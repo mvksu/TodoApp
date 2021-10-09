@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductForm from "./ProductForm";
-import { Redirect } from "react-router";
-import { Link } from "react-router-dom";
-
+import { Link, Route, useHistory } from "react-router-dom";
+import { useConfirm } from "material-ui-confirm";
+import ProductAdd from "./ProductAdd";
+import ProductDetail from "./ProductDetail";
 
 function ProductList() {
   const [productList, setProductList] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const confirm = useConfirm();
+  const history = useHistory()
 
   useEffect(() => {
     async function fetchData() {
@@ -17,7 +20,6 @@ function ProductList() {
       setProductList(response.data);
     }
     fetchData();
-    Redirect('/products')
   }, []);
 
   async function addProduct(newProduct) {
@@ -30,12 +32,20 @@ function ProductList() {
   }
 
   async function deleteProduct(todeleteProduct) {
-    const response = await axios.delete(
-      `https://reqres.in/api/users/${todeleteProduct}`
-    );
-    console.log(response.data);
-    setProductList(productList.filter(product => product.id !== todeleteProduct.id));
-    
+    confirm({ description: "Are you sure?" })
+      .then(async () => {
+        const response = await axios.delete(
+          `https://reqres.in/api/users/${todeleteProduct}`
+        );
+        console.log(response.data);
+        setProductList(
+          productList.filter((product) => product.id !== todeleteProduct.id)
+        );
+        history.push('/products')
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   async function editProduct(editedProduct) {
@@ -43,24 +53,24 @@ function ProductList() {
       `https://reqres.in/api/users/${editedProduct.id}`,
       editedProduct
     );
-    const updatedProducts = productList.map(product => product.id === selectedProduct.id ? {...response.data, id: selectedProduct.id } : product)
-    setProductList(updatedProducts)
+    const updatedProducts = productList.map((product) =>
+      product.id === selectedProduct.id
+        ? { ...response.data, id: selectedProduct.id }
+        : product
+    );
+    setProductList(updatedProducts);
+    history.push('/products');
   }
 
   return (
     <div>
-      <h3>Dodaj produkt</h3>
-      <ProductForm
-        onSubmit={addProduct}
-        initialValues={{
-          title: "",
-          price: "",
-          description: "",
-          image: "",
-          category: "",
-          submit: "",
-        }}
-      />
+      <Route path="/products/new">
+        <ProductAdd onSubmit={addProduct} />
+      </Route>
+      <Route path="/products/:id/details">
+        <ProductDetail editProduct={editProduct} deleteProduct={deleteProduct}/>
+      </Route>
+
       <h1>Products</h1>
       {productList.map((product) => (
         <div
@@ -88,7 +98,7 @@ function ProductList() {
           <h2>{product.price}$</h2>
           <h1>{product.category}</h1>
           <Link to={`/products/${product.id}/details`}>
-              <button>Details</button>
+            <button>Details</button>
           </Link>
           <button onClick={() => deleteProduct(product)}>Usuń</button>
           <button onClick={() => setSelectedProduct(product)}>Edytuj</button>

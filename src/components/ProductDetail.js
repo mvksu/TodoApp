@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { useParams, useHistory } from "react-router"
 import ProductForm from "./ProductForm"
 
-export default function ProductDetail() { 
+export default function ProductDetail({editProduct, deleteProduct}) { 
 const { id } = useParams()
 const [ toEditMode, setEditMode ] = useState(false)
 const [ product, setProduct ] = useState()
@@ -17,25 +17,9 @@ useEffect(() => {
     fetchProduct();
 }, [])
 
-async function deleteProduct(todeleteProduct) {
-    const response = await axios.delete(
-      `https://reqres.in/api/users/${todeleteProduct}`
-    );
-    console.log(response.data);
-    history.push('/')
-    //setProductList(productList.filter(product => product.id !== todeleteProduct.id));
-    
-  }
-  async function editProduct(editedProduct) {
-    const response = await axios.patch(
-      `https://reqres.in/api/users/${editedProduct.id}`,
-      editedProduct
-    );
-    history.push('/')
-  }
 
  return (
-    <div>
+    <div style={{"border" : "1px solid red"}}>
           {toEditMode === true && (
             <div>
               <h3>Edycja</h3>
